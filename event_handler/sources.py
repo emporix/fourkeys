@@ -91,17 +91,23 @@ def get_source(headers):
     if "GitHub-Hookshot" in headers.get("User-Agent", ""):
         return "github"
 
+    if "x-atlassian-webhook-identifier" in headers.get("User-Agent", ""):
+        return "jira"
+
     return headers.get("User-Agent")
 
 
 AUTHORIZED_SOURCES = {
     "github": EventSource(
         "X-Hub-Signature", github_verification
-        ),
+    ),
     "gitlab": EventSource(
         "X-Gitlab-Token", simple_token_verification
-        ),
+    ),
     "tekton": EventSource(
         "tekton-secret", simple_token_verification
-        )
+    ),
+    "jira": EventSource(
+        "jira-secret", simple_token_verification
+    )
 }
