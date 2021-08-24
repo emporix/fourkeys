@@ -91,7 +91,7 @@ def get_source(headers):
     if "GitHub-Hookshot" in headers.get("User-Agent", ""):
         return "github"
 
-    if "x-atlassian-webhook-identifier" in headers.get("User-Agent", ""):
+    if "Atlassian Webhook HTTP Client" in headers.get("User-Agent", ""):
         return "jira"
 
     return headers.get("User-Agent")
