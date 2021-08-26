@@ -71,11 +71,10 @@ def process_jira_event(headers, msg):
     metadata = json.loads(base64.b64decode(
         msg["data"]).decode("utf-8").strip())
     event_type = metadata["webhookEvent"]
-    print(metadata)
+    update_event_type = metadata["issue"]["fields"]["status"]["name"]
 
     types = {"jira:issue_created",
-             "jira:issue_updated",
-             "jira:issue_deleted"}
+             "jira:issue_updated"}
 
     if event_type not in types:
         raise Exception("Unsupported Jira event: '%s'" % event_type)
@@ -84,13 +83,11 @@ def process_jira_event(headers, msg):
         time_created = generate_time()
         e_id = signature
 
-    if event_type == "jira:issue_updated" and metadata["issue"]["fields"]["status"]["name"] == "Done":
+    if event_type == "jira:issue_updated" and update_event_type == "Done":
         time_created = generate_time()
         e_id = signature
-
-    if event_type == "jira:issue_deleted":
-        time_created = generate_time()
-        e_id = signature
+    else:
+        raise Exception("This is not the update event we expect: '%s'" % update_event_type)
 
     # [TODO: Parse the msg data to map to the event object below]
     jira_event = {
