@@ -36,8 +36,6 @@ def index():
     # Check if the source is authorized
     source = sources.get_source(request.headers)
 
-    print(request.headers)
-
     if source not in sources.AUTHORIZED_SOURCES:
         raise Exception(f"Source not authorized: {source}")
 

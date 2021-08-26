@@ -66,26 +66,30 @@ def index():
     return "", 204
 
 
-# [TODO: Replace mock function below]
 def process_jira_event(headers, msg):
-    event_type = headers["x-atlassian-webhook-identifier"]
-    signature = headers["x-atlassian-webhook-identifier"]
+    signature = headers["X-Atlassian-Webhook-Identifier"]
     metadata = json.loads(base64.b64decode(
         msg["data"]).decode("utf-8").strip())
+    event_type = metadata["webhookEvent"]
     print(metadata)
 
     types = {"jira:issue_created",
+             "jira:issue_updated",
              "jira:issue_deleted"}
 
     if event_type not in types:
         raise Exception("Unsupported Jira event: '%s'" % event_type)
 
     if event_type == "jira:issue_created":
-        time_created = metadata["timestamp"]
+        time_created = generate_time()
+        e_id = signature
+
+    if event_type == "jira:issue_updated" and metadata["issue"]["fields"]["status"]["name"] == "Done":
+        time_created = generate_time()
         e_id = signature
 
     if event_type == "jira:issue_deleted":
-        time_created = metadata["timestamp"]
+        time_created = generate_time()
         e_id = signature
 
     # [TODO: Parse the msg data to map to the event object below]
