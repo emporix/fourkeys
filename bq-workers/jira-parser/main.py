@@ -74,7 +74,8 @@ def process_jira_event(headers, msg):
     update_event_type = metadata["issue"]["fields"]["status"]["name"]
 
     types = {"jira:issue_created",
-             "jira:issue_updated"}
+             "jira:issue_updated",
+             "comment_created"}
 
     if event_type not in types:
         raise Exception("Unsupported Jira event: '%s'" % event_type)
@@ -86,10 +87,11 @@ def process_jira_event(headers, msg):
     if event_type == "jira:issue_updated" and update_event_type == "Done":
         time_created = generate_time()
         e_id = signature
-    else:
-        raise Exception("This is not the update event we expect: '%s'" % update_event_type)
 
-    # [TODO: Parse the msg data to map to the event object below]
+    if event_type == "comment_created":
+        time_created = generate_time()
+        e_id = signature
+
     jira_event = {
         "event_type": event_type,  # Event type, eg "push", "pull_reqest", etc
         "id": e_id,  # Object ID, eg pull request ID
