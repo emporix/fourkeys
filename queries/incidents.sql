@@ -33,7 +33,7 @@ FROM
           )
         ) end
      ) as time_resolved,
-    REGEXP_EXTRACT(metadata, r"root cause: ([[:alnum:]]*)") as root_cause,
+    REGEXP_EXTRACT(metadata, r"(?i)root cause: ([[:alnum:]]*)") as root_cause,
     CASE WHEN source LIKE "github%" THEN REGEXP_CONTAINS(JSON_EXTRACT(metadata, '$.issue.labels'), '"name":"Incident"')
         WHEN source LIKE "gitlab%" THEN REGEXP_CONTAINS(JSON_EXTRACT(metadata, '$.object_attributes.labels'), '"title":"Incident"') 
         WHEN source LIKE "jira%" THEN REGEXP_CONTAINS(JSON_EXTRACT(metadata, '$.issue.fields.labels'), 'Incident') end as bug,
