@@ -25,7 +25,8 @@ FROM
      ) as time_created,
     TIMESTAMP(CASE WHEN source LIKE "github%" THEN JSON_EXTRACT_SCALAR(metadata, '$.issue.closed_at')
         WHEN source LIKE "gitlab%" THEN JSON_EXTRACT_SCALAR(metadata, '$.object_attributes.closed_at') 
-        WHEN source LIKE "jira%" AND event_type LIKE "jira:issue_updated%" OR event_type LIKE "comment_created%" THEN FORMAT_TIMESTAMP(
+        WHEN source LIKE "jira%" AND event_type LIKE "jira:issue_updated%"
+        AND JSON_EXTRACT_SCALAR(metadata, '$.issue.fields.status.name') = "Done" THEN FORMAT_TIMESTAMP(
           "%Y-%m-%d %H:%M:%S %Z",
           PARSE_TIMESTAMP(
                "%Y-%m-%dT%H:%M:%E3S%z",
