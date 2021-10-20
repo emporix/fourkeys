@@ -72,6 +72,10 @@ def process_jira_event(headers, msg):
         msg["data"]).decode("utf-8").strip())
     event_type = metadata["webhookEvent"]
     update_event_type = metadata["issue"]["fields"]["status"]["name"]
+    if "labels" in metadata["issue"]["fields"]:
+        labels = metadata["issue"]["fields"]["labels"]
+    else:
+        labels = None
 
     types = {"jira:issue_created",
              "jira:issue_updated",
@@ -79,16 +83,16 @@ def process_jira_event(headers, msg):
 
     if event_type not in types:
         raise Exception("Unsupported Jira event: '%s'" % event_type)
-
-    if event_type == "jira:issue_created":
+    elif event_type == "jira:issue_created":
         time_created = generate_time()
         e_id = signature
-
-    if event_type == "jira:issue_updated" and update_event_type == "Done":
+    elif event_type == "jira:issue_updated" and update_event_type == "Done":
         time_created = generate_time()
         e_id = signature
-
-    if event_type == "comment_created":
+    elif event_type == "comment_created":
+        time_created = generate_time()
+        e_id = signature
+    elif event_type == "jira:issue_updated" and labels is not None and "Incident" in labels:
         time_created = generate_time()
         e_id = signature
 
