@@ -202,15 +202,15 @@ helloworld_project_setup () {
 
   echo "Building default helloworld app..."; set -x
   cd ${DIR}/docs/docs/serving/samples/hello-world/helloworld-python
-  gcloud builds submit --tag gcr.io/${HELLOWORLD_PROJECT}/helloworld .
+  gcloud builds submit --tag europe-docker.pkg.dev/${HELLOWORLD_PROJECT}/tools/helloworld .
   set +x
 
   echo "Deploying to staging..."; set -x
-  gcloud run deploy helloworld-staging --image gcr.io/${HELLOWORLD_PROJECT}/helloworld --allow-unauthenticated
+  gcloud run deploy helloworld-staging --image europe-docker.pkg.dev/${HELLOWORLD_PROJECT}/tools/helloworld --allow-unauthenticated
   set +x
 
   echo "Deploying to prod..."; set -x
-  gcloud run deploy helloworld-prod --image gcr.io/${HELLOWORLD_PROJECT}/helloworld --allow-unauthenticated
+  gcloud run deploy helloworld-prod --image europe-docker.pkg.dev/${HELLOWORLD_PROJECT}/tools/helloworld --allow-unauthenticated
   set +x
 
 }

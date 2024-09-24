@@ -16,19 +16,19 @@ steps:
 - # Build new-source worker image
   name: gcr.io/cloud-builders/docker:latest
   args: ['build', 
-         '--tag=gcr.io/$PROJECT_ID/${_SOURCE}-worker', '.']
+         '--tag=europe-docker.pkg.dev/$PROJECT_ID/tools/${_SOURCE}-worker', '.']
   id: build
 
 - # Push the container image to Container Registry
   name: gcr.io/cloud-builders/docker
-  args: ['push', 'gcr.io/$PROJECT_ID/${_SOURCE}-worker']
+  args: ['push', 'europe-docker.pkg.dev/$PROJECT_ID/tools/${_SOURCE}-worker']
   waitFor: build
   id: push
 
 - # Deploy to Cloud Run
   name: google/cloud-sdk
   args: ['gcloud', 'run', 'deploy', '${_SOURCE}-worker',
-         '--image', 'gcr.io/$PROJECT_ID/${_SOURCE}-worker',
+         '--image', 'europe-docker.pkg.dev/$PROJECT_ID/tools/${_SOURCE}-worker',
          '--region', '${_REGION}',
          '--platform', 'managed'
   ]
@@ -36,5 +36,5 @@ steps:
   waitFor: push
 
 images: [
-  'gcr.io/$PROJECT_ID/${_SOURCE}-worker'
+  'europe-docker.pkg.dev/$PROJECT_ID/tools/${_SOURCE}-worker'
 ]

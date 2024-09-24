@@ -5,7 +5,7 @@ resource "google_cloud_run_service" "parser" {
   template {
     spec {
       containers {
-        image = "gcr.io/${var.google_project_id}/${var.parser_service_name}-parser"
+        image = "europe-docker.pkg.dev/${var.google_project_id}/tools/${var.parser_service_name}-parser"
         env {
           name  = "PROJECT_NAME"
           value = var.google_project_id
